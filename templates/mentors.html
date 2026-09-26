@@ -3,47 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Mentors - MentorConnect</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-    <h1>Available Mentors</h1>
+<header>
+    <h1>MentorConnect</h1>
+
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('mentor_list') }}">Mentors</a>
+        <a href="{{ url_for('mentorship_request') }}">
+            Request Mentorship
+        </a>
+        <a href="{{ url_for('requests_list') }}">
+            My Requests
+        </a>
+    </nav>
+</header>
+
+<main>
+
+    <h2>Available Mentors</h2>
 
     {% for mentor in mentors %}
+    <div class="card">
+        <h3>{{ mentor.name }}</h3>
 
-        <div>
-            <h2>{{ mentor.name }}</h2>
+        <p>
+            <strong>Expertise:</strong>
+            {{ mentor.expertise }}
+        </p>
 
-            <p>
-                <strong>Expertise:</strong>
-                {{ mentor.expertise }}
-            </p>
+        <p>
+            <strong>Department:</strong>
+            {{ mentor.department }}
+        </p>
 
-            <p>
-                <strong>Department:</strong>
-                {{ mentor.department }}
-            </p>
+        <p>
+            <strong>Experience:</strong>
+            {{ mentor.experience }} years
+        </p>
 
-            <p>
-                <strong>Experience:</strong>
-                {{ mentor.experience }} years
-            </p>
+        <p>
+            <strong>Available Slots:</strong>
+            {{ mentor.slots }}
+        </p>
 
-            <p>
-                <strong>Available Slots:</strong>
-                {{ mentor.slots }}
-            </p>
-
-            <hr>
-        </div>
-
+        <a href="{{ url_for('mentorship_request') }}">
+            <button type="button">Request Mentorship</button>
+        </a>
+    </div>
     {% endfor %}
 
-    <footer>
-        <p>MentorConnect | Running Commit: {{ commit_id }}</p>
-    </footer>
+</main>
+
+<footer>
+    <p>MentorConnect | Running Commit: {{ commit_id }}</p>
+</footer>
 
 </body>
 </html>

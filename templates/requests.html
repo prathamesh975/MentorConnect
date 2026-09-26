@@ -3,123 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MentorConnect - Mentorship Requests</title>
+    <title>Mentorship Requests - MentorConnect</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
+<header>
     <h1>MentorConnect</h1>
 
-    <!-- ============================= -->
-    <!-- Mentorship Request Form -->
-    <!-- ============================= -->
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('mentor_list') }}">Mentors</a>
+        <a href="{{ url_for('mentorship_request') }}">
+            Request Mentorship
+        </a>
+        <a href="{{ url_for('requests_list') }}">
+            My Requests
+        </a>
+    </nav>
+</header>
+
+<main>
 
     <h2>Request Mentorship</h2>
 
-    <div class="status-summary">
-        <p>
-            <strong>Pending:</strong>
-            {{ requests | selectattr("status", "equalto", "Pending") | list | length }}
-        </p>
-
-        <p>
-            <strong>Accepted:</strong>
-            {{ requests | selectattr("status", "equalto", "Accepted") | list | length }}
-        </p>
-
-        <p>
-            <strong>Completed:</strong>
-            {{ requests | selectattr("status", "equalto", "Completed") | list | length }}
-        </p>
-    </div>
-
-
-
     {% if error %}
-        <p><strong>{{ error }}</strong></p>
+    <div class="card">
+        <p><strong>Error:</strong> {{ error }}</p>
+    </div>
     {% endif %}
 
-    <form method="POST" action="/request">
+    <form method="POST" action="{{ url_for('mentorship_request') }}">
 
-        <label for="student_name">Student Name:</label>
-        <br>
-
+        <label for="student_name">Student Name</label>
         <input
             type="text"
             id="student_name"
             name="student_name"
+            placeholder="Enter your name"
+            required
         >
 
-        <br><br>
-
-        <label for="mentor_id">Choose Mentor:</label>
-        <br>
-
-        <select id="mentor_id" name="mentor_id">
-
-            <option value="">-- Select Mentor --</option>
+        <label for="mentor_id">Select Mentor</label>
+        <select id="mentor_id" name="mentor_id" required>
+            <option value="">Choose a mentor</option>
 
             {% for mentor in mentors %}
-                <option value="{{ mentor.id }}">
-                    {{ mentor.name }} - {{ mentor.expertise }}
-                </option>
+            <option value="{{ mentor.id }}">
+                {{ mentor.name }} - {{ mentor.expertise }}
+            </option>
             {% endfor %}
-
         </select>
 
-        <br><br>
-
-        <label for="topic">Topic / Subject:</label>
-        <br>
-
+        <label for="topic">Topic / Subject</label>
         <input
             type="text"
             id="topic"
             name="topic"
+            placeholder="What do you need guidance with?"
+            required
         >
 
-        <br><br>
-
-        <label for="message">Message:</label>
-        <br>
-
+        <label for="message">Message</label>
         <textarea
             id="message"
             name="message"
-            rows="5"
-            cols="40"
+            placeholder="Describe what you would like help with..."
+            required
         ></textarea>
 
-        <br><br>
-
-        <button type="submit">
-            Submit Mentorship Request
-        </button>
+        <button type="submit">Submit Mentorship Request</button>
 
     </form>
 
+    <h2>Request Status</h2>
 
-    <hr>
+    <div class="status-summary">
+        <p>
+            <strong>Pending:</strong>
+            {{ requests | selectattr("status", "equalto", "Pending")
+            | list | length }}
+        </p>
 
+        <p>
+            <strong>Accepted:</strong>
+            {{ requests | selectattr("status", "equalto", "Accepted")
+            | list | length }}
+        </p>
 
-    <!-- ============================= -->
-    <!-- Submitted Requests -->
-    <!-- ============================= -->
+        <p>
+            <strong>Completed:</strong>
+            {{ requests | selectattr("status", "equalto", "Completed")
+            | list | length }}
+        </p>
+    </div>
 
-    <h2>Mentorship Requests</h2>
+    <h2>Submitted Requests</h2>
 
     {% if requests %}
 
         {% for mentorship_request in requests %}
 
-            <h3>
-                Request #{{ mentorship_request.id }}
-            </h3>
+        <div class="card">
 
-            <p>
-                <strong>Student:</strong>
-                {{ mentorship_request.student_name }}
-            </p>
+            <h3>{{ mentorship_request.student_name }}</h3>
 
             <p>
                 <strong>Mentor:</strong>
@@ -143,53 +132,57 @@
 
             {% if mentorship_request.status == "Pending" %}
 
-                <form
-                    method="POST"
-                    action="/requests/{{ mentorship_request.id }}/status"
-                >
-                    <button
-                        type="submit"
-                        name="status"
-                        value="Accepted"
-                    >
-                        Accept Request
-                    </button>
-                </form>
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'update_request_status',
+                    request_id=mentorship_request.id
+                ) }}"
+            >
+                <input type="hidden" name="status" value="Accepted">
+                <button type="submit">
+                    Accept Request
+                </button>
+            </form>
 
             {% elif mentorship_request.status == "Accepted" %}
 
-                <form
-                    method="POST"
-                    action="/requests/{{ mentorship_request.id }}/status"
-                >
-                    <button
-                        type="submit"
-                        name="status"
-                        value="Completed"
-                    >
-                        Mark Completed
-                    </button>
-                </form>
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'update_request_status',
+                    request_id=mentorship_request.id
+                ) }}"
+            >
+                <input type="hidden" name="status" value="Completed">
+                <button type="submit">
+                    Mark Completed
+                </button>
+            </form>
 
-            {% elif mentorship_request.status == "Completed" %}
+            {% else %}
 
-                <p>✓ Mentorship completed</p>
+            <p><strong>✓ Mentorship completed</strong></p>
 
             {% endif %}
 
-            <hr>
+        </div>
 
         {% endfor %}
 
     {% else %}
 
-        <p>No mentorship requests have been submitted yet.</p>
+        <div class="card">
+            <p>No mentorship requests have been submitted yet.</p>
+        </div>
 
     {% endif %}
 
-    <footer>
-        <p>MentorConnect | Running Commit: {{ commit_id }}</p>
-    </footer>
+</main>
+
+<footer>
+    <p>MentorConnect | Running Commit: {{ commit_id }}</p>
+</footer>
 
 </body>
 </html>

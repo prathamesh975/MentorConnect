@@ -3,24 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>MentorConnect</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
+<header>
     <h1>MentorConnect</h1>
 
-    <h2>Student Mentorship Management Portal</h2>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('mentor_list') }}">Mentors</a>
+        <a href="{{ url_for('mentorship_request') }}">
+            Request Mentorship
+        </a>
+        <a href="{{ url_for('requests_list') }}">
+            My Requests
+        </a>
+    </nav>
+</header>
 
-    <p>
-        Connect with mentors, request guidance,
-        and track your mentorship journey.
-    </p>
+<main>
 
-    <footer>
-        <p>MentorConnect | Running Commit: {{ commit_id }}</p>
-    </footer>
+    <div class="card">
+        <h2>Student Mentorship Management Portal</h2>
+
+        <p>
+            Connect with experienced mentors, request guidance,
+            and track your mentorship journey.
+        </p>
+    </div>
+
+    <h2>Available Mentors</h2>
+
+    {% for mentor in mentors %}
+    <div class="card">
+        <h3>{{ mentor.name }}</h3>
+
+        <p>
+            <strong>Expertise:</strong>
+            {{ mentor.expertise }}
+        </p>
+
+        <p>
+            <strong>Department:</strong>
+            {{ mentor.department }}
+        </p>
+
+        <p>
+            <strong>Experience:</strong>
+            {{ mentor.experience }} years
+        </p>
+
+        <p>
+            <strong>Available Slots:</strong>
+            {{ mentor.slots }}
+        </p>
+    </div>
+    {% endfor %}
+
+</main>
+
+<footer>
+    <p>MentorConnect | Running Commit: {{ commit_id }}</p>
+</footer>
 
 </body>
 </html>
