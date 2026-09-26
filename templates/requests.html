@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorConnect - Mentorship Requests</title>
+</head>
+
+<body>
+
+    <h1>MentorConnect</h1>
+
+    <!-- ============================= -->
+    <!-- Mentorship Request Form -->
+    <!-- ============================= -->
+
+    <h2>Request Mentorship</h2>
+
+    {% if error %}
+        <p><strong>{{ error }}</strong></p>
+    {% endif %}
+
+    <form method="POST" action="/request">
+
+        <label for="student_name">Student Name:</label>
+        <br>
+
+        <input
+            type="text"
+            id="student_name"
+            name="student_name"
+        >
+
+        <br><br>
+
+        <label for="mentor_id">Choose Mentor:</label>
+        <br>
+
+        <select id="mentor_id" name="mentor_id">
+
+            <option value="">-- Select Mentor --</option>
+
+            {% for mentor in mentors %}
+                <option value="{{ mentor.id }}">
+                    {{ mentor.name }} - {{ mentor.expertise }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label for="topic">Topic / Subject:</label>
+        <br>
+
+        <input
+            type="text"
+            id="topic"
+            name="topic"
+        >
+
+        <br><br>
+
+        <label for="message">Message:</label>
+        <br>
+
+        <textarea
+            id="message"
+            name="message"
+            rows="5"
+            cols="40"
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Submit Mentorship Request
+        </button>
+
+    </form>
+
+
+    <hr>
+
+
+    <!-- ============================= -->
+    <!-- Submitted Requests -->
+    <!-- ============================= -->
+
+    <h2>Mentorship Requests</h2>
+
+    {% if requests %}
+
+        {% for mentorship_request in requests %}
+
+            <h3>
+                Request #{{ mentorship_request.id }}
+            </h3>
+
+            <p>
+                <strong>Student:</strong>
+                {{ mentorship_request.student_name }}
+            </p>
+
+            <p>
+                <strong>Mentor:</strong>
+                {{ mentorship_request.mentor }}
+            </p>
+
+            <p>
+                <strong>Topic:</strong>
+                {{ mentorship_request.topic }}
+            </p>
+
+            <p>
+                <strong>Message:</strong>
+                {{ mentorship_request.message }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {{ mentorship_request.status }}
+            </p>
+
+            {% if mentorship_request.status == "Pending" %}
+
+                <form
+                    method="POST"
+                    action="/requests/{{ mentorship_request.id }}/status"
+                >
+                    <button
+                        type="submit"
+                        name="status"
+                        value="Accepted"
+                    >
+                        Accept Request
+                    </button>
+                </form>
+
+            {% elif mentorship_request.status == "Accepted" %}
+
+                <form
+                    method="POST"
+                    action="/requests/{{ mentorship_request.id }}/status"
+                >
+                    <button
+                        type="submit"
+                        name="status"
+                        value="Completed"
+                    >
+                        Mark Completed
+                    </button>
+                </form>
+
+            {% elif mentorship_request.status == "Completed" %}
+
+                <p>✓ Mentorship completed</p>
+
+            {% endif %}
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No mentorship requests have been submitted yet.</p>
+
+    {% endif %}
+
+</body>
+</html>

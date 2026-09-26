@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mentors - MentorConnect</title>
+</head>
+
+<body>
+
+    <h1>Available Mentors</h1>
+
+    {% for mentor in mentors %}
+
+        <div>
+            <h2>{{ mentor.name }}</h2>
+
+            <p>
+                <strong>Expertise:</strong>
+                {{ mentor.expertise }}
+            </p>
+
+            <p>
+                <strong>Department:</strong>
+                {{ mentor.department }}
+            </p>
+
+            <p>
+                <strong>Experience:</strong>
+                {{ mentor.experience }} years
+            </p>
+
+            <p>
+                <strong>Available Slots:</strong>
+                {{ mentor.slots }}
+            </p>
+
+            <hr>
+        </div>
+
+    {% endfor %}
+
+</body>
+</html>
