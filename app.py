@@ -1,6 +1,15 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def inject_commit_id():
+    return {
+        "commit_id": os.getenv("RENDER_GIT_COMMIT", "local")
+    }
 
 
 mentors = [
