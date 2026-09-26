@@ -1,6 +1,6 @@
 import pytest
 
-from app import app, mentorship_requests
+from app import app, mentors, mentorship_requests
 
 
 @pytest.fixture
@@ -97,3 +97,23 @@ def test_update_request_status(client):
 
     assert response.status_code == 302
     assert mentorship_requests[0]["status"] == "Accepted"
+
+
+def test_unavailable_mentor(client):
+    original_slots = mentors[0]["slots"]
+    mentors[0]["slots"] = 0
+
+    response = client.post(
+        "/request",
+        data={
+            "student_name": "Test Student",
+            "mentor_id": "1",
+            "topic": "Machine Learning",
+            "message": "I need guidance."
+        }
+    )
+
+    assert response.status_code == 200
+    assert len(mentorship_requests) == 0
+
+    mentors[0]["slots"] = original_slots

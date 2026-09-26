@@ -82,6 +82,14 @@ def mentorship_request():
                 error="Invalid mentor selected."
             )
 
+        if mentor["slots"] <= 0:
+            return render_template(
+                "requests.html",
+                mentors=mentors,
+                requests=mentorship_requests,
+                error="This mentor currently has no available slots."
+            )
+
         new_request = {
             "id": len(mentorship_requests) + 1,
             "student_name": student_name,
