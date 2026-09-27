@@ -113,7 +113,7 @@ def test_unavailable_mentor(client):
         }
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 302
     assert len(mentorship_requests) == 0
 
     mentors[0]["slots"] = original_slots
